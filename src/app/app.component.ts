@@ -6,8 +6,11 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'angular-gift-site';
+  // constructor(private http: HttpClient) {
+  //   http.get('http://localhost:3000').subscribe(console.log);
+  // }
 }
