@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LocalStorageService } from './services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'angular-gift-site';
-  // constructor(private http: HttpClient) {
-  //   http.get('http://localhost:3000').subscribe(console.log);
-  // }
+  constructor(private localStorageService: LocalStorageService) {
+    this.localStorageService.save('title', this.title);
+    console.log(this.localStorageService.get('title'));
+  }
 }
