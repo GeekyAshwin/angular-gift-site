@@ -1,25 +1,63 @@
 import { Injectable } from '@angular/core';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocalStorageService {
+  constructor(@Inject(PLATFORM_ID) private platformId: string) {}
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string) { }
-
-
-  public save(key: string, value: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      window.localStorage.setItem(key, value);
-    }
+  #isBrowser(): Observable<boolean> {
+    return of(isPlatformBrowser(this.platformId));
   }
 
-  public get(key: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      return window.localStorage.getItem(key);
-    }
-    return '';
+  public set<T = unknown>(key: string, value: T | null): Observable<boolean> {
+    return this.#isBrowser().pipe(
+      map((canUse) => {
+        if (canUse) {
+          localStorage.setItem(key, JSON.stringify(value));
+          return true;
+        }
+        return false;
+      }),
+    );
+  }
+
+  public get<T = unknown>(key: string): Observable<T | null> {
+    return this.#isBrowser().pipe(
+      map((canUse) => {
+        if (canUse) {
+          const response = localStorage.getItem(key);
+          return response === null ? null : JSON.parse(response);
+        }
+        return false;
+      }),
+    );
+  }
+
+  public remove(key: string): Observable<null | false> {
+    return this.#isBrowser().pipe(
+      map((canUse) => {
+        if (canUse) {
+          localStorage.removeItem(key);
+          return null;
+        }
+        return false;
+      }),
+    );
+  }
+
+  public removeAll(): Observable<null | false> {
+    return this.#isBrowser().pipe(
+      map((canUse) => {
+        if (canUse) {
+          localStorage.clear();
+          return null;
+        }
+        return false;
+      }),
+    );
   }
 }
