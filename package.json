@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --no-watch --code-coverage",
     "test:ci": "ng test --browsers=ChromeHeadless --no-watch --no-progress",
     "serve:ssr:angular-gift-site": "node dist/angular-gift-site/server/server.mjs",
     "lint": "ng lint --fix --eslint-config .eslintrc.json --ignore-path .gitignore"

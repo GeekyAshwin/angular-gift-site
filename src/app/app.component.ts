@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LocalStorageService } from './services/local-storage/local-storage.service';
+import { ApiCallService } from './services/api-call/api-call.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface AppTitle {
   appTitle: string | null;
@@ -15,7 +17,14 @@ export interface AppTitle {
 })
 export class AppComponent {
   title = 'angular-gift-site';
-  constructor(private localStorageService: LocalStorageService) {
+  constructor(
+    @Inject(LocalStorageService)
+    private localStorageService: LocalStorageService,
+    @Inject(ApiCallService)
+    private apiCallService: ApiCallService,
+    @Inject(HttpClient)
+    private httpClient: HttpClient,
+  ) {
     this.localStorageService
       .set<AppTitle>('title', { appTitle: this.title })
       .subscribe((result) => console.log('successfully stored result', result));
@@ -36,5 +45,9 @@ export class AppComponent {
       .subscribe((result) =>
         console.log('cleared local storage with result', result),
       );
+    // const exampleUrl = this.apiCallService.baseUrl();
+    this.httpClient
+      .get('https://jsonplaceholder.typicode.com/posts')
+      .subscribe(console.log);
   }
 }
